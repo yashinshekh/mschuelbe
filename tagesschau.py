@@ -31,7 +31,7 @@ class TagesschauSpider(scrapy.Spider):
     start_urls = ['http://tagesschau.de/']
 
     custom_settings = {
-        "DOWNLOAD_DELAY":0.5
+        # "DOWNLOAD_DELAY":0.5
     }
 
     cats = {
@@ -51,7 +51,7 @@ class TagesschauSpider(scrapy.Spider):
                 'https://www.tagesschau.de/ausland/asien/':'asien'
     }
 
-    if "tagesschau" not in os.listdir(os.getcwd()):
+    if "tagesschau.csv" not in os.listdir(os.getcwd()):
         with open("tagesschau.csv","a",newline="",encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(['category','link','title','date','time'])
@@ -74,7 +74,7 @@ class TagesschauSpider(scrapy.Spider):
             if link not in self.df['link'].values:
                 yield scrapy.Request(link,callback=self.getdata,meta={
                     'cat':response.meta.get('cat'),
-                    'link':response.meta.get('link'),
+                    'link':link,
                 })
             else:
                 print("Exists ...")
