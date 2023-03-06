@@ -112,7 +112,7 @@ class TagesschauSpider(scrapy.Spider):
 
 
     def close(spider, reason):
-        spider.df = spider.df.sort_values(by='date',na_position='last')
+        spider.df = spider.df.sort_values(by='date',ascending=False,na_position='last')
         spider.df.to_csv('tagesschau.csv',index=False)
 
         print("waiting for 30 minutes")
