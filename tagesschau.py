@@ -88,7 +88,7 @@ class TagesschauSpider(scrapy.Spider):
 
 
     def getdata(self,response):
-        title = response.xpath('.//*[@class="seitenkopf__headline--text"]/text()').extract_first()
+        title = response.xpath('.//*[@class="seitenkopf__headline--text"]/text() | .//*[@class="multimediahead__headline-wrapper"]/span/text()').extract_first()
         try:
             date = response.xpath('.//*[@class="metatextline"]/text()[contains(.,"Stand:")] | .//*[@class="multimediahead__date"]/text()').extract_first().replace("Stand: ","").split()[0]
         except:
