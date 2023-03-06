@@ -115,8 +115,8 @@ class TagesschauSpider(scrapy.Spider):
         spider.df = spider.df.sort_values(by='date',na_position='last')
         spider.df.to_csv('tagesschau.csv',index=False)
 
-        print("waiting for 10 minutes")
+        print("waiting for 30 minutes")
 
         # you can change the time from here. 10*60 = 600 seconds which is 10 minutes waiting time
-        time.sleep(600)
+        time.sleep(1800)
         os.system("scrapy runspider tagesschau.py")
