@@ -5,25 +5,34 @@ if platform.system() == "Windows":
         import scrapy
         import dirtyjson
         import pandas
+        import html2text
     except ImportError:
         os.system('python -m pip install scrapy')
         os.system('python -m pip install dirtyjson')
         os.system('python -m pip install pandas')
+        os.system('python -m pip install html2text')
 else:
     try:
         import scrapy
         import dirtyjson
         import pandas
+        import html2text
     except ImportError:
         os.system('python3 -m pip install scrapy')
         os.system('python3 -m pip install dirtyjson')
         os.system('python3 -m pip install pandas')
+        os.system('python3 -m pip install html2text')
 
 import scrapy
 import pandas as pd
 import os
 import csv
 import time
+import html2text
+
+h = html2text.HTML2Text()
+h.ignore_links = True
+h.ignore_images = True
 
 class TagesschauSpider(scrapy.Spider):
     name = 'tagesschau'
@@ -54,9 +63,9 @@ class TagesschauSpider(scrapy.Spider):
     if "tagesschau.csv" not in os.listdir(os.getcwd()):
         with open("tagesschau.csv","a",newline="",encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(['category','link','title','date','time'])
+            writer.writerow(['category','link','title','date','time','text'])
 
-    df = pd.read_csv('tagesschau.csv', header=0, names=['category', 'link', 'title', 'date', 'time'])
+    df = pd.read_csv('tagesschau.csv', header=0, names=['category', 'link', 'title', 'date', 'time','text'])
 
     def start_requests(self):
         for k,v in self.cats.items():
@@ -97,6 +106,10 @@ class TagesschauSpider(scrapy.Spider):
             time = response.xpath('.//*[@class="metatextline"]/text()[contains(.,"Stand:")] | .//*[@class="multimediahead__date"]/text()').extract_first().replace("Stand: ","").replace(date,'').strip()
         except:
             time = ''
+        try:
+            text = h.handle(''.join(response.xpath('.//*[@class="m-ten  m-offset-one l-eight l-offset-two textabsatz columns twelve"]').extract()))
+        except:
+            text = ''
 
 
         new_data = {
@@ -104,7 +117,8 @@ class TagesschauSpider(scrapy.Spider):
             'link':response.meta.get('link'),
             'title':title,
             'date':date,
-            'time':time
+            'time':time,
+            'text':text
         }
         print(new_data)
         self.df = self.df.append(new_data, ignore_index=True)
