@@ -107,7 +107,7 @@ class TagesschauSpider(scrapy.Spider):
         except:
             time = ''
         try:
-            text = h.handle(''.join(response.xpath('.//*[@class="m-ten  m-offset-one l-eight l-offset-two textabsatz columns twelve"]').extract()))
+            text = h.handle(''.join(response.xpath('.//*[@class="m-ten  m-offset-one l-eight l-offset-two textabsatz columns twelve"]').extract())).strip()
         except:
             text = ''
 
